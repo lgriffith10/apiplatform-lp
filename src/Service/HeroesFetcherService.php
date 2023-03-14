@@ -3,12 +3,15 @@
 namespace App\Service;
 
 use App\Entity\Hero;
+use App\Repository\HeroRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 class HeroesFetcherService {
     public function __construct(
         private HttpClientInterface $httpClient,
         private EntityManagerInterface $entityManager,
+        private HeroRepository $heroRepository
     ) {
     }
 
@@ -30,10 +33,12 @@ class HeroesFetcherService {
             $heroInDatabase->setRoleImg($hero['role']['displayIcon']);
             $heroInDatabase->setImage($hero['displayIcon']);
 
-            $this->entityManager->persist($heroInDatabase);
+            if (!$this->heroRepository->findOneBy(['uuid' => $hero['uuid']])) {
+                $this->entityManager->persist($heroInDatabase);
 
-            if ($io) {
-                $io->writeln('Hero ' . $hero['displayName'] . ' added to database');
+                if ($io) {
+                    $io->writeln('Hero ' . $hero['displayName'] . ' added to database');
+                }
             }
         }
 

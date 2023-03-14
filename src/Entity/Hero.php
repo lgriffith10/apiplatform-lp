@@ -2,11 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\HeroRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: HeroRepository::class)]
+#[Get]
+#[GetCollection]
 class Hero
 {
     #[ORM\Id]
