@@ -2,14 +2,26 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\HeroRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\SerializedName;
+use App\Controller\Api\HeroController;
 
 #[ORM\Entity(repositoryClass: HeroRepository::class)]
+#[ApiResource]
 #[Get]
+#[Get(
+    uriTemplate: '/heroes/by-uuid/{uuid}',
+    controller: HeroController::class,
+    name: 'api_hero_by_uuid_get',
+)]
 #[GetCollection]
 class Hero
 {
