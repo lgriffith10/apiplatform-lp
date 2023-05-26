@@ -11,11 +11,13 @@ use ApiPlatform\Metadata\GetCollection;
 use App\Repository\HeroRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\SerializedName;
 use App\Controller\Api\HeroController;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: HeroRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => 'hero:read'],
+)]
 #[Get]
 #[Get(
     uriTemplate: '/heroes/by-uuid/{uuid}',
@@ -25,28 +27,39 @@ use App\Controller\Api\HeroController;
 #[GetCollection]
 class Hero
 {
+    #[Groups(['hero:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::GUID, unique: true)]
+    #[Groups(['hero:read'])]
+    #[ORM\Column(type: Types::GUID)]
     private ?string $uuid = null;
 
+    #[Groups(['hero:read'])]
     #[ORM\Column(length: 255)]
     private ?string $displayName = null;
 
+    #[Groups(['hero:read'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    #[Groups(['hero:read'])]
     #[ORM\Column(length: 255)]
     private ?string $role_name = null;
 
+    #[Groups(['hero:read'])]
     #[ORM\Column(length: 255)]
     private ?string $role_img = null;
 
+    #[Groups(['hero:read'])]
     #[ORM\Column(length: 255)]
     private ?string $image = null;
+
+    #[Groups(['hero:read'])]
+    #[ORM\ManyToOne(inversedBy: 'heroes')]
+    private ?Weapon $weapon = null;
 
     public function getId(): ?int
     {
@@ -121,6 +134,18 @@ class Hero
     public function setImage(string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getWeapon(): ?Weapon
+    {
+        return $this->weapon;
+    }
+
+    public function setWeapon(?Weapon $weapon): self
+    {
+        $this->weapon = $weapon;
 
         return $this;
     }

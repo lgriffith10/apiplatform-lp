@@ -4,6 +4,7 @@ namespace App\Command;
 
 
 use App\Service\HeroesFetcherService;
+use App\Service\WeaponService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,6 +21,7 @@ class FetchHeroesCommand extends Command
 {
     public function __construct(
         private HeroesFetcherService $heroesFetcherService,
+        private WeaponService $weaponService
     ) {
         parent::__construct();
     }
@@ -28,6 +30,7 @@ class FetchHeroesCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
+        $this->weaponService->fetch();
         $this->heroesFetcherService->fetchHeroes($io);
 
         return Command::SUCCESS;
